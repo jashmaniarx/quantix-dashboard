@@ -13,7 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react"
-import { NavLink, useLocation } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -36,8 +36,6 @@ interface SidebarProps {
 
 export function Sidebar({ className }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
-  const location = useLocation()
-
   const toggleCollapsed = () => setIsCollapsed(!isCollapsed)
 
   return (
@@ -48,7 +46,7 @@ export function Sidebar({ className }: SidebarProps) {
       }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className={cn(
-        "flex h-full flex-col border-r border-sidebar-border bg-sidebar",
+        "relative flex h-full flex-col border-r border-sidebar-border bg-sidebar",
         className
       )}
     >
@@ -89,51 +87,54 @@ export function Sidebar({ className }: SidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 p-4">
-        {navigation.map((item) => {
-          const isActive = location.pathname === item.href
-          return (
-            <NavLink
-              key={item.name}
-              to={item.href}
-              className={cn(
-                "group flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-all",
+        {navigation.map((item) => (
+          <NavLink
+            key={item.name}
+            to={item.href}
+            end
+            className={({ isActive }) =>
+              cn(
+                "group relative flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-all",
                 isActive
                   ? "bg-sidebar-accent text-sidebar-primary"
                   : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-primary"
-              )}
-            >
-              <item.icon
-                className={cn(
-                  "h-5 w-5 shrink-0 transition-colors",
-                  isActive
-                    ? "text-sidebar-primary"
-                    : "text-sidebar-foreground group-hover:text-sidebar-primary"
-                )}
-              />
-              <AnimatePresence mode="wait">
-                {!isCollapsed && (
-                  <motion.span
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ duration: 0.2 }}
-                    className="ml-3"
-                  >
-                    {item.name}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-              
-              {isActive && (
-                <motion.div
-                  layoutId="activeIndicator"
-                  className="absolute left-0 h-8 w-1 rounded-r-full bg-sidebar-primary"
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              )
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <item.icon
+                  className={cn(
+                    "h-5 w-5 shrink-0 transition-colors",
+                    isActive
+                      ? "text-sidebar-primary"
+                      : "text-sidebar-foreground group-hover:text-sidebar-primary"
+                  )}
                 />
-              )}
-            </NavLink>
-          )
-        })}
+                <AnimatePresence mode="wait">
+                  {!isCollapsed && (
+                    <motion.span
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="ml-3"
+                    >
+                      {item.name}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+                {isActive && (
+                  <motion.div
+                    layoutId="activeIndicator"
+                    className="absolute left-0 h-8 w-1 rounded-r-full bg-sidebar-primary"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </>
+            )}
+          </NavLink>
+        ))}
       </nav>
 
       {/* User section */}
@@ -154,9 +155,7 @@ export function Sidebar({ className }: SidebarProps) {
                 <p className="text-sm font-medium text-sidebar-foreground">
                   Jash Maniar
                 </p>
-                <p className="text-xs text-sidebar-foreground/60">
-                  Admin
-                </p>
+                <p className="text-xs text-sidebar-foreground/60">Admin</p>
               </motion.div>
             )}
           </AnimatePresence>
