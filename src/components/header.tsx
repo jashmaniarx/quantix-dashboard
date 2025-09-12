@@ -1,5 +1,7 @@
 import { Search, Bell, Settings, HelpCircle } from "lucide-react"
 import { motion } from "framer-motion"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,6 +16,25 @@ import {
 import { Badge } from "@/components/ui/badge"
 
 export function Header() {
+  const [searchQuery, setSearchQuery] = useState("")
+  const navigate = useNavigate()
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      // Navigate to a search results page or handle search logic
+      console.log("Searching for:", searchQuery)
+    }
+  }
+
+  const handleHelpClick = () => {
+    window.open("https://docs.example.com", "_blank")
+  }
+
+  const handleSettingsClick = () => {
+    navigate("/settings")
+  }
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -24,13 +45,15 @@ export function Header() {
       <div className="flex h-16 items-center px-6">
         {/* Search */}
         <div className="flex flex-1 items-center space-x-4">
-          <div className="relative w-full max-w-sm">
+          <form onSubmit={handleSearch} className="relative w-full max-w-sm">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
             <Input
               placeholder="Search analytics, reports, users..."
               className="pl-9 pr-4"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-          </div>
+          </form>
         </div>
 
         {/* Actions */}
@@ -42,7 +65,7 @@ export function Header() {
                 <Bell className="h-4 w-4" />
                 <Badge
                   variant="destructive"
-                  className="absolute -right-1 -top-1 h-5 w-5 p-0 text-xs"
+                  className="absolute -right-1 -top-1 h-5 w-5 p-0 text-xs flex items-center justify-center"
                 >
                   3
                 </Badge>
@@ -82,12 +105,12 @@ export function Header() {
           </DropdownMenu>
 
           {/* Help */}
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" onClick={handleHelpClick}>
             <HelpCircle className="h-4 w-4" />
           </Button>
 
           {/* Settings */}
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" onClick={handleSettingsClick}>
             <Settings className="h-4 w-4" />
           </Button>
 
