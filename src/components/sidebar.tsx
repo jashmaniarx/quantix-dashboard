@@ -65,7 +65,7 @@ export function Sidebar({ className }: SidebarProps) {
                 <span className="text-sm font-bold text-white">Q</span>
               </div>
               <span className="text-lg font-semibold text-sidebar-foreground">
-                Quantix by Jash Maniar
+                Quantix
               </span>
             </motion.div>
           )}
