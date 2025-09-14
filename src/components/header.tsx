@@ -1,11 +1,10 @@
-import { Search, Bell, Settings, HelpCircle } from "lucide-react"
+import { Info, Bell, Settings } from "lucide-react"
 import { motion } from "framer-motion"
-import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { SearchFunctionality } from "@/components/business/search-functionality"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,19 +15,14 @@ import {
 import { Badge } from "@/components/ui/badge"
 
 export function Header() {
-  const [searchQuery, setSearchQuery] = useState("")
   const navigate = useNavigate()
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      // Navigate to a search results page or handle search logic
-      console.log("Searching for:", searchQuery)
-    }
+  const handleNavigate = (path: string) => {
+    navigate(path)
   }
 
-  const handleHelpClick = () => {
-    window.open("https://docs.example.com", "_blank")
+  const handleInfoClick = () => {
+    console.log("Info clicked - showing help")
   }
 
   const handleSettingsClick = () => {
@@ -45,28 +39,29 @@ export function Header() {
       <div className="flex h-16 items-center px-6">
         {/* Search */}
         <div className="flex flex-1 items-center space-x-4">
-          <form onSubmit={handleSearch} className="relative w-full max-w-sm">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
-            <Input
-              placeholder="Search analytics, reports, users..."
-              className="pl-9 pr-4"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </form>
+          <div className="w-full max-w-sm">
+            <SearchFunctionality onNavigate={handleNavigate} />
+          </div>
         </div>
 
         {/* Actions */}
         <div className="flex items-center space-x-2">
+          {/* Info */}
+          <Button variant="ghost" size="sm" onClick={handleInfoClick}>
+            <Info className="h-4 w-4" />
+          </Button>
+
+          {/* Settings */}
+          <Button variant="ghost" size="sm" onClick={handleSettingsClick}>
+            <Settings className="h-4 w-4" />
+          </Button>
+
           {/* Notifications */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="relative">
                 <Bell className="h-4 w-4" />
-                <Badge
-                  variant="destructive"
-                  className="absolute -right-1 -top-1 h-5 w-5 p-0 text-xs flex items-center justify-center"
-                >
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 p-0 text-xs flex items-center justify-center bg-primary text-primary-foreground rounded-full">
                   3
                 </Badge>
               </Button>
@@ -103,16 +98,6 @@ export function Header() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* Help */}
-          <Button variant="ghost" size="sm" onClick={handleHelpClick}>
-            <HelpCircle className="h-4 w-4" />
-          </Button>
-
-          {/* Settings */}
-          <Button variant="ghost" size="sm" onClick={handleSettingsClick}>
-            <Settings className="h-4 w-4" />
-          </Button>
 
           {/* Theme Toggle */}
           <ThemeToggle />

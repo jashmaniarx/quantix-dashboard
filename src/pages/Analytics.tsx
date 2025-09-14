@@ -16,9 +16,24 @@ import { Sidebar } from "@/components/sidebar"
 import { Header } from "@/components/header"
 import { MetricCard } from "@/components/cards/metric-card"
 import { ChartCard } from "@/components/cards/chart-card"
+import { KPIGrid } from "@/components/business/kpi-grid"
+import { FinancialOverview } from "@/components/business/financial-overview"
+import { DepartmentBudgets } from "@/components/business/department-budgets"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+import {
+  companyMetrics,
+  employeeMetrics,
+  financialData,
+  kpiData,
+  customerSegments,
+  productPerformance,
+  departmentBudgets,
+  salesPipeline,
+  marketingCampaigns
+} from "@/lib/business-data"
 
 // Mock data for analytics
 const analyticsData = [
@@ -65,37 +80,58 @@ const Analytics = () => {
               </div>
             </div>
 
-            {/* Key Metrics */}
+            {/* Company Overview */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               <MetricCard
-                title="Total Sessions"
-                value="92,847"
-                change={15.2}
-                icon={<Users className="h-6 w-6" />}
+                title="Annual Revenue"
+                value={companyMetrics.annualRevenue}
+                change={18.7}
+                icon={<DollarSign className="h-6 w-6" />}
                 delay={0.1}
               />
               <MetricCard
-                title="Page Views"
-                value="284,392"
-                change={8.7}
-                icon={<Activity className="h-6 w-6" />}
+                title="Monthly Recurring"
+                value={companyMetrics.monthlyRecurring}
+                change={12.4}
+                icon={<TrendingUp className="h-6 w-6" />}
                 delay={0.2}
               />
               <MetricCard
-                title="Avg. Session Duration"
-                value="4m 32s"
-                change={12.1}
-                icon={<TrendingUp className="h-6 w-6" />}
+                title="Total Employees"
+                value={employeeMetrics.totalEmployees.toLocaleString()}
+                change={8.2}
+                icon={<Users className="h-6 w-6" />}
                 delay={0.3}
               />
               <MetricCard
-                title="Conversion Rate"
-                value="3.4%"
-                change={-2.1}
+                title="Employee Satisfaction"
+                value={`${employeeMetrics.satisfaction}/5`}
+                change={3.1}
                 icon={<Target className="h-6 w-6" />}
                 delay={0.4}
               />
             </div>
+
+            {/* Financial Overview */}
+            <FinancialOverview
+              data={financialData}
+              title="Financial Performance"
+              delay={0.5}
+            />
+
+            {/* Key Performance Indicators */}
+            <KPIGrid
+              data={kpiData}
+              title="Key Performance Indicators"
+              delay={0.6}
+            />
+
+            {/* Department Budgets */}
+            <DepartmentBudgets
+              data={departmentBudgets}
+              title="Department Budget Tracking"
+              delay={0.7}
+            />
 
             {/* Analytics Tabs */}
             <Tabs defaultValue="overview" className="space-y-6">
@@ -109,22 +145,60 @@ const Analytics = () => {
               <TabsContent value="overview" className="space-y-6">
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   <ChartCard
-                    title="Website Traffic"
-                    subtitle="Visitor analytics over time"
-                    data={analyticsData}
-                    type="area"
+                    title="Customer Segments Revenue"
+                    subtitle="Revenue by customer segment"
+                    data={customerSegments.map(segment => ({
+                      name: segment.segment,
+                      value: segment.revenue,
+                      customers: segment.customers
+                    }))}
+                    type="bar"
                     dataKey="value"
                     color="hsl(var(--primary))"
                     height={300}
                   />
                   
                   <ChartCard
-                    title="Session Analytics"
-                    subtitle="User sessions and engagement"
-                    data={analyticsData}
-                    type="line"
-                    dataKey="sessions"
+                    title="Product Performance"
+                    subtitle="Revenue by product line"
+                    data={productPerformance.map(product => ({
+                      name: product.product,
+                      value: product.revenue,
+                      users: product.users
+                    }))}
+                    type="area"
+                    dataKey="value"
                     color="hsl(var(--accent))"
+                    height={300}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                  <ChartCard
+                    title="Sales Pipeline"
+                    subtitle="Sales funnel analysis"
+                    data={salesPipeline.map(stage => ({
+                      name: stage.stage,
+                      value: stage.value,
+                      count: stage.count
+                    }))}
+                    type="bar"
+                    dataKey="value"
+                    color="hsl(var(--success))"
+                    height={300}
+                  />
+                  
+                  <ChartCard
+                    title="Marketing ROI"
+                    subtitle="Campaign performance"
+                    data={marketingCampaigns.map(campaign => ({
+                      name: campaign.campaign.slice(0, 10),
+                      value: campaign.roi,
+                      spend: campaign.spend
+                    }))}
+                    type="line"
+                    dataKey="value"
+                    color="hsl(var(--warning))"
                     height={300}
                   />
                 </div>
